@@ -4,10 +4,8 @@ import pandas as pd                             # pandas documentation : https:/
 import pandas_gbq                               # pandas_gbq documentation: https://pypi.org/project/pandas-gbq/
 import json
 
-zendesk_crendentials = 'ZENDESK CREDENTIALS'
-gbq_credentials = 'From google-auth or pydata-google-auth library'
-gbq_tableId = 'BigQuery table Id of the zendesk tickets table'
-gbq_projectId = 'BigQuery project Id that the table is in'
+from logininformations import zendesk_crendentials, gbq_credentials, gbq_tableId, gbq_projectId
+
 file_json_output_filename = "xyz.json"
 
 # For Zendesk Cred format and api docs: https://pypi.org/project/zenpy/
@@ -22,12 +20,12 @@ raw_ticket_data = zenpy_client.search_export(type='ticket')
 # Convert Raw Ticket JSON to Python Dict
 ticket_dict = raw_ticket_data.to_dict()
 
+# Convert Python Dict to Pandas Dataframe
+ticket_df = pd.DataFrame(ticket_dict)
+
 # Write in a JSON file
 with open(file_json_output_filename, 'w') as myFile:
 	json.dump(ticket_dict, myFile)
-
-# Convert Python Dict to Pandas Dataframe
-ticket_df = pd.DataFrame(ticket_dict)
 
 #Create BigQuery Instance
 pandas_gbq.context.credentials = gbq_credentials
