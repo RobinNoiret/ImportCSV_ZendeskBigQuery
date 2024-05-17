@@ -1,0 +1,4 @@
+zenpy
+zenpy.lib.api_objects
+pandas
+pandas_gbq
