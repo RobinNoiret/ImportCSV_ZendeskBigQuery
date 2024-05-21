@@ -33,7 +33,7 @@ pip install pandas-gbq `
 ### Script Version
 1. Open the script file and enter your Zendesk credentials directly in the code.
 Run the script:
-` python zendesk_to_bigquery_script.py `
+` python connectorZendeskBigQuery.py `
 
 ## Configuration
 Currently, the project supports only one authentication method. Additional authentication methods are planned for future development.
