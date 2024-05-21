@@ -19,7 +19,6 @@ creds = {
 }
 project_id = "your-project"
 table_id = 'your_dataset.your_table'
-
 #_______________________________________________________________________________________________________________
 #                                                   Connector
 #_______________________________________________________________________________________________________________
@@ -43,6 +42,6 @@ print("... ... successfully converted python dict to pandas dataframe!")
 ticket_df_rowcount = ticket_df.shape[0]
 print("... ... which has " + str(ticket_df_rowcount) + " rows of tickets!")
 
-#print("... push data in BigQuery ...")
-#pandas_gbq.to_gbq(ticket_df, table_id, project_id = project_id)
-#print("... ... successfully import data in BigQuery!")
+print("... push data in BigQuery ...")
+pandas_gbq.to_gbq(ticket_df, table_id, project_id = project_id)
+print("... ... successfully import data in BigQuery!")
