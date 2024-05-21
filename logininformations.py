@@ -1,7 +1,7 @@
 zendesk_crendentials = {
-    'email' : 'your_email',
-    'token' : 'your_token',
-    'subdomain': 'your_subdomain'
+    'email' : 'robin.noiret@lumapps.com',
+    'token' : 'ilzu3bo1tRJLTYkFBkfB4VVgqXwAPUS5Gu6D5E4s',
+    'subdomain': 'lumapps'
 }
 
 # Other way to complete zendesk_credentials :
