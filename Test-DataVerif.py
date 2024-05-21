@@ -1,19 +1,25 @@
-import pandas as pd
+import json
+from datetime import datetime, timedelta
 from zenpy import Zenpy
+import pandas as pd
 
-# Remplacer les informations de connexion par un dictionnaire contenant vos identifiants
+# Credentials
 creds = {
-    'email' : '...',
-    'token' : '...',
-    'subdomain': '...',
+    'email': 'your_email',
+    'token': 'your_token',
+    'subdomain': 'your_subdomain'
 }
+
+# Dates de la première semaine de 2021
+start_date = datetime(2021, 1, 1)
+end_date = start_date + timedelta(days=7)
 
 print("... connecting to zendesk ...")
 zenpy_client = Zenpy(**creds)
 print("... ... successfully connected to zendesk!")
 
 print("... Querying Zendesk Tickets ...")
-raw_ticket_data = zenpy_client.search_export(type='ticket', status='open')
+raw_ticket_data = zenpy_client.search_export(type='ticket', created_between=(start_date, end_date))
 print("... ... successfully retrieved zendesk tickets!")
 
 # Créer une liste pour stocker les tickets
@@ -32,3 +38,8 @@ print("... ... which has " + str(ticket_df_rowcount) + " rows of tickets!")
 
 print("... Print ROWS ...")
 print(ticket_df.head())  # Afficher les premières lignes pour vérifier les colonnes
+
+print("... JSON file writing ...")
+# Écrire le DataFrame en JSON
+ticket_df.to_json('data.json', orient='records', lines=True)
+print("... Writing complete! ...")
