@@ -5,7 +5,7 @@ Zendesk to BigQuery Sync is a Python application designed to **synchronize Zende
 - **Interactive Application**: A GUI-based app that prompts users for their credentials before starting the synchronization.
 - **Script Version**: A command-line script where users can input their login information directly into the code. <br>
 
-This project is currently under development.
+This project is currently under development. Find the documentation [here](https://github.com/RobinNoiret/Connector_ZendeskBigQuery/blob/986e59d9083749909d9630985a24e82ca984eaa9/Documentation/Doc_PyConnector.md)
 
 ## Prerequisites
 The project requires the following Python libraries:
