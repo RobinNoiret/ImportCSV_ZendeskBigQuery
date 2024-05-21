@@ -6,6 +6,7 @@ from zenpy import Zenpy
 from zenpy.lib.api_objects import Ticket
 import pandas as pd
 import pandas_gbq
+from datetime import datetime, timedelta
 
 #_______________________________________________________________________________________________________________
 #                                               Login informations
@@ -23,13 +24,17 @@ table_id = 'your_dataset.your_table'
 #                                                   Connector
 #_______________________________________________________________________________________________________________
 
+start_date = datetime(2021, 1, 1)
+end_date = start_date + timedelta(days=7)
+
 print("... connecting to zendesk ...")
 zenpy_client = Zenpy(**creds)
 print("... ... successfully connected to zendesk!")
 
 print("... Querying Zendesk Tickets ...")
-raw_ticket_data = zenpy_client.search_export(type='ticket', status='open')
-#raw_ticket_data = zenpy_client.search_export(type='ticket')
+raw_ticket_data = zenpy_client.search_export(type='ticket', created_between=(start_date, end_date))     # selected with date range
+#raw_ticket_data = zenpy_client.search_export(type='ticket', status='open')                             # selected with status
+#raw_ticket_data = zenpy_client.search_export(type='ticket')                                            # select all tickets
 print("... ... successfully retreived zendesk tickets!")
 
 print("... converting zendesk raw object data to pandas dataframe ...")
