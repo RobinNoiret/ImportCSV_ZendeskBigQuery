@@ -22,6 +22,8 @@ pip install pandas \
 pip install pandas-gbq `
 
 ## Usage Instructions
+be sure to locate the script file using the **cd** command in the terminal.
+
 ### Interactive Application
 1. Run the GUI application:
 
@@ -33,6 +35,7 @@ pip install pandas-gbq `
 ### Script Version
 1. Open the script file and enter your Zendesk credentials directly in the code.
 Run the script:
+
 ` python connectorZendeskBigQuery.py `
 
 ## Configuration
