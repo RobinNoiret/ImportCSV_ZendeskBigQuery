@@ -1,4 +1,3 @@
-zenpy
-zenpy.lib.api_objects
+json
 pandas
-pandas_gbq
+google.cloud
