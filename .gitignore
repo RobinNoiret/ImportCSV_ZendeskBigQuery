@@ -1,1 +1,3 @@
-logininformations.py
+Data/
+*.csv
+*.json
