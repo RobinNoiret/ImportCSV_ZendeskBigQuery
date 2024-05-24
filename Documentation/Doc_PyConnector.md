@@ -2,11 +2,8 @@
 
 ## Table of Contents
 1. [Library Imports](#library-imports)
-2. [Login Information](#login-information)
-3. [Connector](#connector)
-4. [Zendesk Ticket Query](#zendesk-ticket-query)
-5. [Conversion to Pandas DataFrame](#conversion-to-pandas-dataframe)
-6. [Export to BigQuery (Commented)](#export-to-bigquery-commented)
+2. [Login Informations](#login-information)
+3. [Process](#process)
 
 ## Library Imports
 
@@ -31,7 +28,7 @@ If you have any questions about the different libraries, here are the links to t
 - [Google.cloud documentation](https://cloud.google.com/python/docs?hl=fr)
 - [os documentation]([https://docs.python.org/3/library/datetime.html](https://docs.python.org/fr/3/library/os.html))
   
-## Login Information
+## Login Informations
 ```python
 project_id = "your_projectID"
 dataset_id = "your_datasetID"
