@@ -3,18 +3,17 @@
 # ____________________________________________________________________________________________________________________________________________________________________ #
 
 print("... Début du chargement des bibliothèques ...")
-import json                                                 # JSON processing
-import csv                                                  # CSV processing
-import pandas as pd                                         # Data processing
-from google.cloud import bigquery                           # BigQuery connection management
-from google.cloud.exceptions import NotFound                # Error management               
-import os                                                   # Environmental management
+import json                                                  # JSON processing
+import csv                                                   # CSV processing
+import pandas as pd                                          # Data processing
+from google.cloud import bigquery                            # BigQuery connection management
+from google.cloud.exceptions import NotFound                 # Error management               
+import os                                                    # Environmental management
 print("... Bibliothèques chargées ...")
 
 # ____________________________________________________________________________________________________________________________________________________________________ #
 #                                                                               Variables
 # ____________________________________________________________________________________________________________________________________________________________________ #
-
 
 
 #project_id = "your_projectID"                               # BigQuery project identifier
@@ -85,7 +84,7 @@ def convert_json_to_ndjson(input_file_path, output_file_path):
 
 # Data Filtering function _______________________________________________________________________________________________
 def data_filtering(input_file_path, filtered_output_file_path, column_mapping):
-    # Lire et filtrer le fichier NDJSON
+    # Reading and filtering the NDJSON file
     filtered_data = []
     try:
         with open(input_file_path, 'r', encoding='utf-8') as infile:
@@ -96,7 +95,7 @@ def data_filtering(input_file_path, filtered_output_file_path, column_mapping):
     except json.JSONDecodeError as e:
         print(f"Erreur de décodage JSON : {e}")
 
-    # Écrire les données filtrées dans un fichier JSON de sortie
+    # Writting new data
     with open(filtered_output_file_path, 'w', encoding='utf-8') as outfile:
         json.dump(filtered_data, outfile, indent=4)
 
@@ -109,7 +108,7 @@ def date_correction(input_file, output_file):
             for line in f_in:
                 data = json.loads(line)
                 if 'created_at' in data:
-                    # Ajoute ":00" à la date si les secondes sont manquantes
+                    # Add ":00" and the end of date
                     if len(data['created_at']) == 16:
                         data['created_at'] += ":00"
                 json.dump(data, f_out)
@@ -121,9 +120,9 @@ def fill_organization_name(input_file, output_file):
         with open(output_file, 'w') as f_out:
             for line in f_in:
                 data = json.loads(line)
-                # Vérifie si organization_name est vide
+                # Check if organization_name is empty
                 if not data.get('organization_name'):
-                    # Utilise organization_id pour remplir organization_name
+                    # use organization_id to complete organization_name
                     data['organization_name'] = data.get('organization_id')
                     print("organization_name rempli avec organization_id :", data)
                 json.dump(data, f_out)
@@ -135,9 +134,9 @@ def convert_tags_to_list(input_file, output_file):
         with open(output_file, 'w') as f_out:
             for line in f_in:
                 data = json.loads(line)
-                # Vérifie si le champ tags existe et est une chaîne de caractères
+                # Check if tags exist and is a string
                 if 'tags' in data and isinstance(data['tags'], str):
-                    # Convertit la chaîne de caractères en liste
+                    # Convert string into a list
                     data['tags'] = data['tags'].split()
                     print("tags convertis en liste :", data['tags'])
                 json.dump(data, f_out)
@@ -148,13 +147,13 @@ def convert_tags_to_list(input_file, output_file):
 # ____________________________________________________________________________________________________________________________________________________________________ #
 
 # Clean and CSV to JSON convertion _____________________________________________________________________________________
-csv_Inputfile_path = 'Data/input.csv'                                # input CSV file path
+csv_Inputfile_path = 'Data/input.csv'                                   # input CSV file path
 json_file_path = 'Data/JSON_data.json'                                  # input data convert in JSON file path
 clean_and_convert_csv_to_json(csv_Inputfile_path, json_file_path)       # Function call - CSV 2 JSON
 
 # JSON to NDJSON convertion ____________________________________________________________________________________________
 input_file_path = json_file_path                                        # input data convert in JSON file path
-output_file_path = 'Data/NDJSON_data.json'                              # inline data file path
+output_file_path = 'Data/NDJSON_data.json'                              # inline JSON path
 convert_json_to_ndjson(input_file_path, output_file_path)               # Function call - JSON to NDJSON (ND = Newline Delimiter)
 
 # Data filtering _______________________________________________________________________________________________________
@@ -180,27 +179,27 @@ column_mapping = {
     "Ticket Form ID": "ticket_form_id"
 }               
 input_file_path = output_file_path                                      # inline data file path
-filtered_output_file_path = 'Data/FILTERED_data.json'                   # filtred data
-data_filtering(input_file_path, filtered_output_file_path, column_mapping)# Function call - Data filtering
+filtered_output_file_path = 'Data/FILTERED_data.json'                   # filtred data path
+data_filtering(input_file_path,filtered_output_file_path,column_mapping)# Function call - Data filtering
 
 # JSON to NDJSON convertion ____________________________________________________________________________________________
 input_file_path = filtered_output_file_path                             # filtred data
-output_file_path = 'Data/NDJSON_data2.json'                                   # Final ouput (inline filtred data)
+output_file_path = 'Data/NDJSON_data2.json'                             # filtered inline JSON path
 convert_json_to_ndjson(input_file_path, output_file_path)               # Function call - JSON to NDJSON
 
 # Date format correction _______________________________________________________________________________________________
-input_file = output_file_path                                           # Chemin vers le fichier JSON d'entrée
-output_file = 'Data/DateCorrection.json'                                # Chemin vers le fichier JSON de sortie
+input_file = output_file_path                                           # filtered inline JSON path
+output_file = 'Data/DateCorrection.json'                                # JSON with date correction
 date_correction(input_file, output_file)                                # Function call - Date format correction
 
 # Organization_name correction _________________________________________________________________________________________
-input_file = output_file                                                # Chemin vers le fichier JSON d'entrée
-output_file = 'Data/OrgaName.json'                                      # Chemin vers le fichier JSON de sortie
+input_file = output_file                                                # JSON with date correction
+output_file = 'Data/OrgaName.json'                                      # JSON with organization_name correction
 fill_organization_name(input_file, output_file)                         # Function call - Organization_name correction
 
 # Correct tag format ___________________________________________________________________________________________________
-input_file = output_file                               # Chemin vers le fichier JSON d'entrée
-output_file = 'Data/Output.json'                              # Chemin vers le fichier JSON de sortie
+input_file = output_file                                                # JSON with organization_name correction
+output_file = 'Data/Output.json'                                        # JSON with tags correction - Output
 convert_tags_to_list(input_file, output_file)                           # Function call - Correct tag format
 
 
