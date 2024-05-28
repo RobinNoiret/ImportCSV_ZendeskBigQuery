@@ -57,5 +57,5 @@ Contributions are welcome! Feel free to open an issue or submit a pull request i
 
 ## Contact
 
-Robin Noiret - contact@robinnoiret.fr
-Project Link: [click here](https://github.com/RobinNoiret/Connector_ZendeskBigQuery) `
+Robin Noiret - contact@robinnoiret.fr  <br>
+Project Link: [click here](https://github.com/RobinNoiret/Connector_ZendeskBigQuery)
