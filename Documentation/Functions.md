@@ -4,8 +4,8 @@
 
 - Purpose: Checks for the existence of a dataset in Google BigQuery.
 - Parameters:
--> dataset_ref: Reference to the dataset to be checked.
--> client: Google BigQuery client object for making API calls.
+  - dataset_ref: Reference to the dataset to be checked.
+  - client: Google BigQuery client object for making API calls.
 - Functionality:
 Attempts to retrieve the specified dataset using client.get_dataset(dataset_ref).
 If the dataset exists, it prints a success message.
@@ -17,8 +17,8 @@ Before performing operations on a dataset, it ensures that the dataset exists in
 
 - Purpose: Checks for the existence of a table in Google BigQuery.
 - Parameters:
--> table_ref: Reference to the table to be checked.
--> client: Google BigQuery client object for making API calls.
+  - table_ref: Reference to the table to be checked.
+  - client: Google BigQuery client object for making API calls.
 - Functionality:
 Attempts to retrieve the specified table using client.get_table(table_ref).
 If the table exists, it prints a success message.
@@ -30,8 +30,8 @@ Verifies the presence of the destination table before loading data into it.
 
 - Purpose: Converts a CSV file to a JSON file while cleaning the data.
 - Parameters:
--> csv_Inputfile_path: Path to the input CSV file.
--> json_file_path: Path to save the output JSON file.
+  - csv_Inputfile_path: Path to the input CSV file.
+  - json_file_path: Path to save the output JSON file.
 - delimiter: Delimiter used in the CSV file (default is comma ,).
 - Functionality:
 Reads the CSV file and cleans each row.
@@ -43,8 +43,8 @@ Preprocessing step to convert raw CSV data into a clean JSON format for further 
 
 - Purpose: Converts a JSON file to NDJSON format (Newline Delimited JSON).
 - Parameters:
--> input_file_path: Path to the input JSON file.
--> output_file_path: Path to save the output NDJSON file.
+  - input_file_path: Path to the input JSON file.
+  - output_file_path: Path to save the output NDJSON file.
 - Functionality:
 Reads the input JSON file.
 Writes each JSON record as a single line in the output file.
@@ -56,9 +56,9 @@ Prepares the data in NDJSON format for efficient loading into BigQuery.
 
 - Purpose: Filters data from a JSON file based on specified column mappings.
 - Parameters:
--> input_file_path: Path to the input JSON file.
--> filtered_output_file_path: Path to save the filtered output JSON file.
--> column_mapping: Dictionary mapping file columns to BigQuery columns.
+  - input_file_path: Path to the input JSON file.
+  - filtered_output_file_path: Path to save the filtered output JSON file.
+  - column_mapping: Dictionary mapping file columns to BigQuery columns.
 - Functionality:
 Reads each JSON record, maps specified columns, and creates filtered data.
 Writes the filtered data to a new JSON file.
@@ -70,8 +70,8 @@ Selectively extracts and transforms data to match the schema of the destination 
 
 - Purpose: Corrects the date format in a JSON file.
 - Parameters:
--> input_file: Path to the input JSON file.
--> output_file: Path to save the output JSON file with corrected dates.
+  - input_file: Path to the input JSON file.
+  - output_file: Path to save the output JSON file with corrected dates.
 - Functionality:
 Reads each JSON record, checks and corrects the date format if necessary.
 - Usage:
@@ -82,8 +82,8 @@ Ensures consistency in date formatting for compatibility with BigQuery date fiel
 
 - Purpose: Populates missing organization names using organization IDs.
 - Parameters:
--> input_file: Path to the input JSON file.
--> output_file: Path to save the output JSON file with filled organization names.
+  - input_file: Path to the input JSON file.
+  - output_file: Path to save the output JSON file with filled organization names.
 - Functionality:
 Reads each JSON record, checks for missing organization names, and fills them using organization IDs.
 - Usage:
@@ -94,8 +94,8 @@ Enhances data completeness by providing organization names where missing.
 
 - Purpose: Converts tags from string to list format in a JSON file.
 - Parameters:
--> input_file: Path to the input JSON file.
--> output_file: Path to save the output JSON file with tags converted to list format.
+  - input_file: Path to the input JSON file.
+  - output_file: Path to save the output JSON file with tags converted to list format.
 - Functionality:
 Reads each JSON record, converts tag strings to lists if necessary.
 - Usage:
