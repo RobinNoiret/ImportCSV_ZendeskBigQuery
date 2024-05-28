@@ -55,10 +55,10 @@
 
 - **Input:** Final JSON file with corrected tag format (Output.json).
 - **Process:**
--> Initializes the BigQuery client.
--> Verifies dataset and table existence.
--> Configures load job settings.
--> Loads JSON data into the BigQuery table.
+  - Initializes the BigQuery client.
+  - Verifies dataset and table existence.
+  - Configures load job settings.
+  - Loads JSON data into the BigQuery table.
 
 
 #### 9. Completion Message:
