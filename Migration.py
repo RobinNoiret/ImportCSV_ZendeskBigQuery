@@ -15,10 +15,12 @@ print("... Bibliothèques chargées ...")
 #                                                                               Variables
 # ____________________________________________________________________________________________________________________________________________________________________ #
 
-project_id = "your_projectID"                          # BigQuery project identifier
-dataset_id = "your_datasetID"                                      # BigQuery dataset identifier
-table_name = "your_tablename"                                   # Destination table name
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'Your_credential_path'
+
+
+#project_id = "your_projectID"                               # BigQuery project identifier
+#dataset_id = "your_datasetID"                               # BigQuery dataset identifier
+#table_name = "your_tablename"                               # Destination table name
+#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'Your_credential_path'
 
 # ____________________________________________________________________________________________________________________________________________________________________ #
 #                                                                               Functions
@@ -100,6 +102,46 @@ def data_filtering(input_file_path, filtered_output_file_path, column_mapping):
 
     print(f"Les données ont été filtrées et enregistrées dans {filtered_output_file_path}")
 
+# Data correction - dates format __________________________________________________________________________________________
+def date_correction(input_file, output_file):
+    with open(input_file, 'r') as f_in:
+        with open(output_file, 'w') as f_out:
+            for line in f_in:
+                data = json.loads(line)
+                if 'created_at' in data:
+                    # Ajoute ":00" à la date si les secondes sont manquantes
+                    if len(data['created_at']) == 16:
+                        data['created_at'] += ":00"
+                json.dump(data, f_out)
+                f_out.write('\n')
+
+# Data correction - organization name _____________________________________________________________________________________
+def fill_organization_name(input_file, output_file):
+    with open(input_file, 'r') as f_in:
+        with open(output_file, 'w') as f_out:
+            for line in f_in:
+                data = json.loads(line)
+                # Vérifie si organization_name est vide
+                if not data.get('organization_name'):
+                    # Utilise organization_id pour remplir organization_name
+                    data['organization_name'] = data.get('organization_id')
+                    print("organization_name rempli avec organization_id :", data)
+                json.dump(data, f_out)
+                f_out.write('\n')
+
+# Data correction - tags format ___________________________________________________________________________________________
+def convert_tags_to_list(input_file, output_file):
+    with open(input_file, 'r') as f_in:
+        with open(output_file, 'w') as f_out:
+            for line in f_in:
+                data = json.loads(line)
+                # Vérifie si le champ tags existe et est une chaîne de caractères
+                if 'tags' in data and isinstance(data['tags'], str):
+                    # Convertit la chaîne de caractères en liste
+                    data['tags'] = data['tags'].split()
+                    print("tags convertis en liste :", data['tags'])
+                json.dump(data, f_out)
+                f_out.write('\n')
 
 # ____________________________________________________________________________________________________________________________________________________________________ #
 #                                                                               Executions
@@ -143,8 +185,24 @@ data_filtering(input_file_path, filtered_output_file_path, column_mapping)# Func
 
 # JSON to NDJSON convertion ____________________________________________________________________________________________
 input_file_path = filtered_output_file_path                             # filtred data
-output_file_path = 'Data/Output.json'                                   # Final ouput (inline filtred data)
+output_file_path = 'Data/NDJSON_data2.json'                                   # Final ouput (inline filtred data)
 convert_json_to_ndjson(input_file_path, output_file_path)               # Function call - JSON to NDJSON
+
+# Date format correction _______________________________________________________________________________________________
+input_file = output_file_path                                           # Chemin vers le fichier JSON d'entrée
+output_file = 'Data/DateCorrection.json'                                # Chemin vers le fichier JSON de sortie
+date_correction(input_file, output_file)                                # Function call - Date format correction
+
+# Organization_name correction _________________________________________________________________________________________
+input_file = output_file                                                # Chemin vers le fichier JSON d'entrée
+output_file = 'Data/OrgaName.json'                                      # Chemin vers le fichier JSON de sortie
+fill_organization_name(input_file, output_file)                         # Function call - Organization_name correction
+
+# Correct tag format ___________________________________________________________________________________________________
+input_file = output_file                               # Chemin vers le fichier JSON d'entrée
+output_file = 'Data/Output.json'                              # Chemin vers le fichier JSON de sortie
+convert_tags_to_list(input_file, output_file)                           # Function call - Correct tag format
+
 
 # BigQuery client initialization with a local login ____________________________________________________________________
 client = bigquery.Client(project=project_id)                            # Instantiating the BigQuery client
@@ -164,6 +222,7 @@ job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND   # Config
 print("... Configuration terminé ...")
 
 # Loading JSON data into the BigQuery table ___________________________________________________________________________
+json_file_path = output_file
 print("... Début du chargement des données ...")
 with open(json_file_path, "rb") as source_file:                                                 # rb = read binary => better compatibility and integrity of data
     load_job = client.load_table_from_file(source_file, table_ref, job_config=job_config)       # pushing data on BigQuery
@@ -171,3 +230,5 @@ load_job.result()                                                               
 print("... Chargement des données terminé ...")
 
 print(f"Les données du fichier {json_file_path} ont été chargées avec succès dans {table_name}")
+
+client.close()                                                          # Close connection
