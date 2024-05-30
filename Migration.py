@@ -15,11 +15,15 @@ print("... Bibliothèques chargées ...")
 #                                                                               Variables
 # ____________________________________________________________________________________________________________________________________________________________________ #
 
+import credentials
 
-#project_id = "your_projectID"                               # BigQuery project identifier
-#dataset_id = "your_datasetID"                               # BigQuery dataset identifier
-#table_name = "your_tablename"                               # Destination table name
-#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'Your_credential_path'
+project_id = credentials.project_id                               # BigQuery project identifier
+dataset_id = credentials.dataset_id                               # BigQuery dataset identifier
+table_name = credentials.table_name                              # Destination table name
+
+key_path = credentials.ospath
+key_path = os.path.abspath(key_path)
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = key_path
 
 # ____________________________________________________________________________________________________________________________________________________________________ #
 #                                                                               Functions
