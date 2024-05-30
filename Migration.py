@@ -19,7 +19,7 @@ import credentials
 
 project_id = credentials.project_id                               # BigQuery project identifier
 dataset_id = credentials.dataset_id                               # BigQuery dataset identifier
-table_name = credentials.table_name                              # Destination table name
+table_name = credentials.table_name                               # Destination table name
 
 key_path = credentials.ospath
 key_path = os.path.abspath(key_path)
