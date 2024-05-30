@@ -162,26 +162,25 @@ convert_json_to_ndjson(input_file_path, output_file_path)               # Functi
 
 # Data filtering _______________________________________________________________________________________________________
 column_mapping = {
-    "Summation column": "brand_id",
-    "Categories [list]": "categories",
-    "Created at": "created_at",
-    "Group": "group",
-    "JIRA URL [txt]": "jira_url",
-    "Level [list]": "level",
-    "Organization": "organization_id",
-    "Organization Name": "organization_name",
-    "POD [list]": "pod",
-    "Priority": "priority",
-    "Product feedback status [list]": "product_feedback_status",
-    "Region [list]": "region",
-    "Satisfaction Score": "satisfaction_rating",
-    "Status": "status",
-    "Tags": "tags",
-    "Ticket type": "type",
-    "Type (custom) [list]": "type_custom",
-    "Id": "ticket_id",
-    "Ticket Form ID": "ticket_form_id"
-}               
+  "Summation column": "brand_id",
+  "Id": "ticket_id",
+  "Assignee": "assignee",
+  "Group": "group",
+  "Tags": "tags",
+  "Status": "status",
+  "Priority": "priority",
+  "Ticket type": "type",
+  "Created at": "created_at",
+  "Satisfaction Score": "satisfaction_rating",
+  "Categories [list]": "categories",
+  "Severity [list]": "severity",
+  "POD [list]": "pod",
+  "JIRA URL [txt]": "jira_url",
+  "Level [list]": "level",
+  "Type (custom) [list]": "type_custom",
+  "Product feedback status [list]": "product_feedback_status"
+}
+               
 input_file_path = output_file_path                                      # inline data file path
 filtered_output_file_path = 'Data/FILTERED_data.json'                   # filtred data path
 data_filtering(input_file_path,filtered_output_file_path,column_mapping)# Function call - Data filtering
