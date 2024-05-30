@@ -3,7 +3,7 @@
 ## Project Description 📰
 Zendesk to BigQuery Sync is a Python application designed to **efficiently synchronize Zendesk historical data into Google BigQuery**. This project was created to address the slow synchronization process of an existing connector. It includes different codes that complement each other to make the complete solution work.
 
-This project is currently under development. Find the documentation [here](https://github.com/RobinNoiret/Connector_ZendeskBigQuery/blob/986e59d9083749909d9630985a24e82ca984eaa9/Documentation/).
+This project is currently under development. Find the documentation [here](https://github.com/RobinNoiret/Connector_ZendeskBigQuery/blob/b54cd2f845c11ae0e6f3511d9cc095f576bae0e1/Documentation/Documentation.md).
 
 ## Prerequisites ⚠
 The project requires the following Python libraries:
@@ -57,5 +57,5 @@ Contributions are welcome! Feel free to open an issue or submit a pull request i
 
 ## Contact
 
-Robin Noiret - contact@robinnoiret.fr
-Project Link: [click here](https://github.com/RobinNoiret/Connector_ZendeskBigQuery) `
+Robin Noiret - contact@robinnoiret.fr  <br>
+Project Link: [click here](https://github.com/RobinNoiret/Connector_ZendeskBigQuery)
