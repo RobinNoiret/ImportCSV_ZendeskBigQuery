@@ -14,7 +14,7 @@ def validate_ndjson(file_path):
                 print(f"Invalid JSON on line {line_num}: {e}")
                 break  # Stop the loop after finding an invalid line
 
-validate_ndjson("Data/Output.json")
+validate_ndjson("Data/Tag.json")
 
 
 import json
@@ -27,4 +27,4 @@ def validate_ndjson(file_path):
             except json.JSONDecodeError as e:
                 print(f"Invalid JSON on line {line_num}: {e}")
 
-validate_ndjson("Data/Output.json")
+validate_ndjson("Data/Tag.json")
