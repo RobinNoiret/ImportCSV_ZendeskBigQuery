@@ -214,13 +214,15 @@ def transform_satisfaction_rating(input_path, output_path, fields):
 #                                                                               Executions
 # ____________________________________________________________________________________________________________________________________________________________________ #
 
+print("... Starting data transformation ...")
+
 # Clean and CSV to JSON convertion _____________________________________________________________________________________
 csv_Inputfile_path = 'Data/input.csv'                                   # input CSV file path
 json_file_path = 'Data/JSON_data.json'                                  # input data convert in JSON file path
 clean_and_convert_csv_to_json(csv_Inputfile_path, json_file_path)       # Function call - CSV 2 JSON
 
 # JSON to NDJSON convertion ____________________________________________________________________________________________
-input_file_path = json_file_path                                        # input data convert in JSON file path
+input_file_path = 'Data/JSON_data.json'                                 # input data convert in JSON file path
 output_file_path = 'Data/NDJSON_data.json'                              # inline JSON path
 convert_json_to_ndjson(input_file_path, output_file_path)               # Function call - JSON to NDJSON (ND = Newline Delimiter)
 
@@ -250,32 +252,32 @@ column_mapping = {
     "Need customer training [flag]": "NT_customer"
 }
                
-input_file_path = output_file_path                                      # inline data file path
+input_file_path = 'Data/NDJSON_data.json'                               # inline data file path
 filtered_output_file_path = 'Data/FILTERED_data.json'                   # filtred data path
 data_filtering(input_file_path,filtered_output_file_path,column_mapping)# Function call - Data filtering
 
 # JSON to NDJSON convertion ____________________________________________________________________________________________
-input_file_path = filtered_output_file_path                             # filtred data
+input_file_path = 'Data/FILTERED_data.json'                             # filtred data
 output_file_path = 'Data/NDJSON_data2.json'                             # filtered inline JSON path
 convert_json_to_ndjson(input_file_path, output_file_path)               # Function call - JSON to NDJSON
 
 # Date format correction _______________________________________________________________________________________________
-input_file = output_file_path                                           # filtered inline JSON path
+input_file = 'Data/NDJSON_data2.json'                                   # filtered inline JSON path
 output_file = 'Data/DateCorrection.json'                                # JSON with date correction
 date_correction(input_file, output_file)                                # Function call - Date format correction
 
 # Organization_name correction _________________________________________________________________________________________
-input_file = output_file                                                # JSON with date correction
+input_file = 'Data/DateCorrection.json'                                 # JSON with date correction
 output_file = 'Data/OrgaName.json'                                      # JSON with organization_name correction
 fill_organization_name(input_file, output_file)                         # Function call - Organization_name correction
 
 # Correct tag format ___________________________________________________________________________________________________
-input_file = output_file                                                # JSON with organization_name correction
-output_file = 'Data/Output.json'                                        # JSON with tags correction - Output
+input_file = 'Data/OrgaName.json'                                       # JSON with organization_name correction
+output_file = 'Data/Tag.json'                                           # JSON with tags correction - Output
 convert_tags_to_list(input_file, output_file)                           # Function call - Correct tag format
 
 # Lower case Correction ________________________________________________________________________________________________
-input_path = 'Data/NDJSON_data.json'
+input_path = 'Data/Tag.json' 
 output_path = 'Data/Lowercase.json'
 fields_to_lowercase = ['Priority', 'Status', 'Ticket type', 'Severity [list]'] 
 transform_fields_to_lowercase(input_path, output_path, fields_to_lowercase)
@@ -300,9 +302,11 @@ transform_to_boolean(input_path, output_path, fields_boolean)
 
 # Null value Correction ________________________________________________________________________________________________
 input_path = 'Data/Boolean.json'
-output_path = 'Data/Null.json'
+output_path = 'Data/Output.json'
 fields_with_dashes = ['Product feedback status [list]', 'POD [list]', 'JIRA URL [txt]', 'Categories [list]']
 replace_dashes_with_null(input_path, output_path, fields_with_dashes)
+
+print("... Transformation complete ...")
 
 # BigQuery client initialization with a local login ____________________________________________________________________
 client = bigquery.Client(project=project_id)                            # Instantiating the BigQuery client
