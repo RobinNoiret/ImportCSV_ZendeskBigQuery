@@ -147,19 +147,68 @@ def convert_tags_to_list(input_file, output_file):
                 f_out.write('\n')
 
 # Data correction - Maj ___________________________________________________________________________________________________
-
+def transform_fields_to_lowercase(input_path, output_path, fields_to_lowercase):
+    with open(input_path, 'r', encoding='utf-8') as f_input:
+        with open(output_path, 'w', encoding='utf-8') as f_output:
+            for line in f_input:
+                data = json.loads(line)
+                for field in fields_to_lowercase:
+                    if field in data:
+                        data[field] = data[field].lower()
+                f_output.write(json.dumps(data) + '\n')
 
 # Data correction - Boolean _______________________________________________________________________________________________
-
+def transform_to_boolean(input_path, output_path, fields):
+    with open(input_path, 'r', encoding='utf-8') as f_input:
+        with open(output_path, 'w', encoding='utf-8') as f_output:
+            for line in f_input:
+                entry = json.loads(line)
+                for field in fields:
+                    if field in entry:
+                        value = entry[field].lower()
+                        if value == 'yes':
+                            entry[field] = True
+                        elif value == 'no':
+                            entry[field] = False
+                f_output.write(json.dumps(entry) + '\n')
 
 # Data correction - Underscore ____________________________________________________________________________________________
-
+def transform_to_underscore(input_path, output_path, fields):
+    with open(input_path, 'r', encoding='utf-8') as f_input:
+        with open(output_path, 'w', encoding='utf-8') as f_output:
+            for line in f_input:
+                entry = json.loads(line)
+                for field in fields:
+                    if field in entry:
+                        entry[field] = entry[field].replace(' ', '_').lower()
+                f_output.write(json.dumps(entry) + '\n')
 
 # Data correction - Null __________________________________________________________________________________________________
-
+def replace_dashes_with_null(input_path, output_path, fields):
+    with open(input_path, 'r', encoding='utf-8') as f_input:
+        with open(output_path, 'w', encoding='utf-8') as f_output:
+            for line in f_input:
+                entry = json.loads(line)
+                for field in fields:
+                    if field in entry and entry[field] == "-":
+                        entry[field] = None
+                f_output.write(json.dumps(entry) + '\n')
 
 # Data correction - Satisfaction rating ___________________________________________________________________________________
-
+def transform_satisfaction_rating(input_path, output_path, fields):
+    with open(input_path, 'r', encoding='utf-8') as f_input:
+        with open(output_path, 'w', encoding='utf-8') as f_output:
+            for line in f_input:
+                entry = json.loads(line)
+                for field in fields:
+                    if field in entry:
+                        value = entry[field].lower()
+                        if value in ['offered', 'good', 'bad']:
+                            value = value
+                        elif value == 'not offered':
+                            value = 'unoffered'
+                        entry[field] = f"{{score={value}}}"
+                f_output.write(json.dumps(entry) + '\n')
 
 # ____________________________________________________________________________________________________________________________________________________________________ #
 #                                                                               Executions
@@ -225,6 +274,35 @@ input_file = output_file                                                # JSON w
 output_file = 'Data/Output.json'                                        # JSON with tags correction - Output
 convert_tags_to_list(input_file, output_file)                           # Function call - Correct tag format
 
+# Lower case Correction ________________________________________________________________________________________________
+input_path = 'Data/NDJSON_data.json'
+output_path = 'Data/Lowercase.json'
+fields_to_lowercase = ['Priority', 'Status', 'Ticket type', 'Severity [list]'] 
+transform_fields_to_lowercase(input_path, output_path, fields_to_lowercase)
+
+# Underscore Correction ________________________________________________________________________________________________
+input_path = 'Data/Lowercase.json'
+output_path = 'Data/Underscore.json'
+fields_to_underscore = ['Level [list]', 'Type (custom) [list]']
+transform_to_underscore(input_path, output_path, fields_to_underscore)
+
+# Satisfaction rating Correction _______________________________________________________________________________________
+input_path = 'Data/Underscore.json'
+output_path = 'Data/SatisRating.json'
+fields_satisfaction = ['Satisfaction Score']
+transform_satisfaction_rating(input_path, output_path, fields_satisfaction)
+
+# Boolean Correction ___________________________________________________________________________________________________
+input_path = 'Data/SatisRating.json'
+output_path = 'Data/Boolean.json'
+fields_boolean = ['Need partner training [flag]','Need customer training [flag]']
+transform_to_boolean(input_path, output_path, fields_boolean)
+
+# Null value Correction ________________________________________________________________________________________________
+input_path = 'Data/Boolean.json'
+output_path = 'Data/Null.json'
+fields_with_dashes = ['Product feedback status [list]', 'POD [list]', 'JIRA URL [txt]', 'Categories [list]']
+replace_dashes_with_null(input_path, output_path, fields_with_dashes)
 
 # BigQuery client initialization with a local login ____________________________________________________________________
 client = bigquery.Client(project=project_id)                            # Instantiating the BigQuery client
