@@ -279,31 +279,31 @@ convert_tags_to_list(input_file, output_file)                           # Functi
 # Lower case Correction ________________________________________________________________________________________________
 input_path = 'Data/Tag.json' 
 output_path = 'Data/Lowercase.json'
-fields_to_lowercase = ['Priority', 'Status', 'Ticket type', 'Severity [list]'] 
+fields_to_lowercase = ['priority', 'status', 'type', 'severity'] 
 transform_fields_to_lowercase(input_path, output_path, fields_to_lowercase)
 
 # Underscore Correction ________________________________________________________________________________________________
 input_path = 'Data/Lowercase.json'
 output_path = 'Data/Underscore.json'
-fields_to_underscore = ['Level [list]', 'Type (custom) [list]']
+fields_to_underscore = ['level', 'type_custom']
 transform_to_underscore(input_path, output_path, fields_to_underscore)
 
 # Satisfaction rating Correction _______________________________________________________________________________________
 input_path = 'Data/Underscore.json'
 output_path = 'Data/SatisRating.json'
-fields_satisfaction = ['Satisfaction Score']
+fields_satisfaction = ['satisfaction_rating']
 transform_satisfaction_rating(input_path, output_path, fields_satisfaction)
 
 # Boolean Correction ___________________________________________________________________________________________________
 input_path = 'Data/SatisRating.json'
 output_path = 'Data/Boolean.json'
-fields_boolean = ['Need partner training [flag]','Need customer training [flag]']
+fields_boolean = ['NT_partner','NT_customer']
 transform_to_boolean(input_path, output_path, fields_boolean)
 
 # Null value Correction ________________________________________________________________________________________________
 input_path = 'Data/Boolean.json'
 output_path = 'Data/Output.json'
-fields_with_dashes = ['Product feedback status [list]', 'POD [list]', 'JIRA URL [txt]', 'Categories [list]']
+fields_with_dashes = ['product_feedback_status', 'pod', 'jira_url', 'categories']
 replace_dashes_with_null(input_path, output_path, fields_with_dashes)
 
 print("... Transformation complete ...")
@@ -318,21 +318,3 @@ table_ref = dataset_ref.table(table_name)                               # Table 
 check_dataset(dataset_ref, client)                                      # Check dataset existence
 check_table(table_ref, client)                                          # Check table existence
 
-# Load job configuration ______________________________________________________________________________________________
-print("... Confirguration ...")
-job_config = bigquery.LoadJobConfig()                                   # Instantiating the LoadJob for setup
-job_config.source_format = bigquery.SourceFormat.NEWLINE_DELIMITED_JSON # Define the data format
-job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND   # Configure the data push settings
-print("... Configuration terminé ...")
-
-# Loading JSON data into the BigQuery table ___________________________________________________________________________
-json_file_path = output_file
-print("... Début du chargement des données ...")
-with open(json_file_path, "rb") as source_file:                                                 # rb = read binary => better compatibility and integrity of data
-    load_job = client.load_table_from_file(source_file, table_ref, job_config=job_config)       # pushing data on BigQuery
-load_job.result()                                                                               # waitting the end of loading
-print("... Chargement des données terminé ...")
-
-print(f"Les données du fichier {json_file_path} ont été chargées avec succès dans {table_name}")
-
-client.close()                                                          # Close connection
