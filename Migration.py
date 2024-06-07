@@ -118,6 +118,8 @@ def date_correction(input_file, output_file):
                 json.dump(data, f_out)
                 f_out.write('\n')
 
+    print(f"Les dates ont été corrigées et enregistrées dans {output_file}")
+
 # Data correction - organization name _____________________________________________________________________________________
 def fill_organization_name(input_file, output_file):
     with open(input_file, 'r') as f_in:
@@ -128,9 +130,10 @@ def fill_organization_name(input_file, output_file):
                 if not data.get('organization_name'):
                     # use organization_id to complete organization_name
                     data['organization_name'] = data.get('organization_id')
-                    print("organization_name rempli avec organization_id :", data)
                 json.dump(data, f_out)
                 f_out.write('\n')
+    
+    print(f"Les nom clients ont été corrigés et enregistrées dans {output_file}")
 
 # Data correction - tags format ___________________________________________________________________________________________
 def convert_tags_to_list(input_file, output_file):
@@ -142,9 +145,10 @@ def convert_tags_to_list(input_file, output_file):
                 if 'tags' in data and isinstance(data['tags'], str):
                     # Convert string into a list
                     data['tags'] = data['tags'].split()
-                    print("tags convertis en liste :", data['tags'])
                 json.dump(data, f_out)
                 f_out.write('\n')
+
+    print(f"Les tags ont été corrigés et enregistrées dans {output_file}")
 
 # Data correction - Maj ___________________________________________________________________________________________________
 def transform_fields_to_lowercase(input_path, output_path, fields_to_lowercase):
@@ -156,6 +160,8 @@ def transform_fields_to_lowercase(input_path, output_path, fields_to_lowercase):
                     if field in data:
                         data[field] = data[field].lower()
                 f_output.write(json.dumps(data) + '\n')
+    
+    print(f"Les données ont été passés en Lowercase et enregistrées dans {output_path}")
 
 # Data correction - Boolean _______________________________________________________________________________________________
 def transform_to_boolean(input_path, output_path, fields):
@@ -172,6 +178,8 @@ def transform_to_boolean(input_path, output_path, fields):
                             entry[field] = False
                 f_output.write(json.dumps(entry) + '\n')
 
+    print(f"Les données booléennes ont été corrigées et enregistrées dans {output_path}")
+
 # Data correction - Underscore ____________________________________________________________________________________________
 def transform_to_underscore(input_path, output_path, fields):
     with open(input_path, 'r', encoding='utf-8') as f_input:
@@ -183,6 +191,8 @@ def transform_to_underscore(input_path, output_path, fields):
                         entry[field] = entry[field].replace(' ', '_').lower()
                 f_output.write(json.dumps(entry) + '\n')
 
+    print(f"Les données ont corrigées avec l'ajout d'un underscore et enregistrées dans {output_path}")
+
 # Data correction - Null __________________________________________________________________________________________________
 def replace_dashes_with_null(input_path, output_path, fields):
     with open(input_path, 'r', encoding='utf-8') as f_input:
@@ -193,6 +203,8 @@ def replace_dashes_with_null(input_path, output_path, fields):
                     if field in entry and entry[field] == "-":
                         entry[field] = None
                 f_output.write(json.dumps(entry) + '\n')
+
+    print(f"Les données null ont été corrigé et enregistrées dans {output_path}")
 
 # Data correction - Satisfaction rating ___________________________________________________________________________________
 def transform_satisfaction_rating(input_path, output_path, fields):
@@ -209,6 +221,8 @@ def transform_satisfaction_rating(input_path, output_path, fields):
                             value = 'unoffered'
                         entry[field] = f"{{score={value}}}"
                 f_output.write(json.dumps(entry) + '\n')
+
+    print(f"Les données de satisfaction ont été corrigées et enregistrées dans {output_path}")
 
 # ____________________________________________________________________________________________________________________________________________________________________ #
 #                                                                               Executions
@@ -303,7 +317,7 @@ transform_to_boolean(input_path, output_path, fields_boolean)
 # Null value Correction ________________________________________________________________________________________________
 input_path = 'Data/Boolean.json'
 output_path = 'Data/Output.json'
-fields_with_dashes = ['product_feedback_status', 'pod', 'jira_url', 'categories']
+fields_with_dashes = ['product_feedback_status', 'pod', 'jira_url', 'categories','level', 'type_custom', 'severity','NT_partner','NT_customer', 'group', 'priority']
 replace_dashes_with_null(input_path, output_path, fields_with_dashes)
 
 print("... Transformation complete ...")
@@ -318,3 +332,21 @@ table_ref = dataset_ref.table(table_name)                               # Table 
 check_dataset(dataset_ref, client)                                      # Check dataset existence
 check_table(table_ref, client)                                          # Check table existence
 
+# Load job configuration ______________________________________________________________________________________________
+print("... Confirguration ...")
+job_config = bigquery.LoadJobConfig()                                   # Instantiating the LoadJob for setup
+job_config.source_format = bigquery.SourceFormat.NEWLINE_DELIMITED_JSON # Define the data format
+job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND   # Configure the data push settings
+print("... Configuration terminé ...")
+
+# Loading JSON data into the BigQuery table ___________________________________________________________________________
+json_file_path = output_file
+print("... Début du chargement des données ...")
+with open(json_file_path, "rb") as source_file:                                                 # rb = read binary => better compatibility and integrity of data
+    load_job = client.load_table_from_file(source_file, table_ref, job_config=job_config)       # pushing data on BigQuery
+load_job.result()                                                                               # waitting the end of loading
+print("... Chargement des données terminé ...")
+
+print(f"Les données du fichier {json_file_path} ont été chargées avec succès dans {table_name}")
+
+client.close()                                                          # Close connection
