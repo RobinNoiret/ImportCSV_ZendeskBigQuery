@@ -340,7 +340,7 @@ job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND   # Config
 print("... Configuration terminé ...")
 
 # Loading JSON data into the BigQuery table ___________________________________________________________________________
-json_file_path = output_file
+json_file_path = 'Data/Output.json'
 print("... Début du chargement des données ...")
 with open(json_file_path, "rb") as source_file:                                                 # rb = read binary => better compatibility and integrity of data
     load_job = client.load_table_from_file(source_file, table_ref, job_config=job_config)       # pushing data on BigQuery
